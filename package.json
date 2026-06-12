@@ -10,6 +10,7 @@
     "cron:run": "tsx --env-file=.env.local src/lib/cron/run.ts",
     "import:recent": "tsx --env-file=.env.local scripts/import-recent-stats.ts",
     "import:wc2022": "tsx --env-file=.env.local scripts/import-wc2022-stats.ts",
+    "import:resultados": "tsx --env-file=.env.local scripts/import-resultados.ts",
     "seed": "tsx --env-file=.env.local scripts/seed.ts"
   },
   "dependencies": {

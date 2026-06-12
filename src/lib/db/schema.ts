@@ -59,4 +59,8 @@ export async function initSchema() {
     CREATE INDEX IF NOT EXISTS idx_estadisticas_equipo
       ON estadisticas_equipo(equipo_id, fecha DESC);
   `)
+
+  // Migrations (idempotent — silently skip if column already exists)
+  await db.execute("ALTER TABLE partidos ADD COLUMN goles_local INTEGER").catch(() => {})
+  await db.execute("ALTER TABLE partidos ADD COLUMN goles_visitante INTEGER").catch(() => {})
 }

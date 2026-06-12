@@ -38,7 +38,25 @@
       "Bash(node --env-file=.env.local -e ' *)",
       "Bash(curl -s \"http://localhost:3000/partido/1\")",
       "Skill(run)",
-      "Bash(timeout 30 bash -c 'until curl -sf http://localhost:3000 >/dev/null; do sleep 1; done')"
+      "Bash(timeout 30 bash -c 'until curl -sf http://localhost:3000 >/dev/null; do sleep 1; done')",
+      "Bash(git commit *)",
+      "Bash(gh repo *)",
+      "Bash(vercel --yes)",
+      "Bash(pnpm dlx *)",
+      "Bash(pnpm seed *)",
+      "Bash(xargs ls)",
+      "Bash(curl -s \"https://v3.football.api-sports.io/leagues?name=FIFA+World+Cup\" -H \"x-apisports-key: 16d14a26f679d08645d1e02f37a32c1e\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); r=d['response']['requests']; print\\(f'Requests usadas: {r[\\\\\"current\\\\\"]}/{r[\\\\\"limit_day\\\\\"]}'\\)\")",
+      "Bash(curl -s 'https://v3.football.api-sports.io/fixtures?date=2026-06-11&league=1' -H 'x-apisports-key: 16d14a26f679d08645d1e02f37a32c1e')",
+      "Bash(curl -s https://v3.football.api-sports.io/fixtures?date=2026-06-11 -H 'x-apisports-key: 16d14a26f679d08645d1e02f37a32c1e')",
+      "Bash(curl -s https://v3.football.api-sports.io/fixtures?date=2026-06-12 -H 'x-apisports-key: 16d14a26f679d08645d1e02f37a32c1e')",
+      "Bash(lsof -ti:3000)",
+      "Bash(xargs kill -9)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(curl -sSfL https://get.tur.so/install.sh)",
+      "Bash(bash)",
+      "Bash(git add *)"
     ]
   }
 }

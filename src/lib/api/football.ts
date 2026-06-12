@@ -14,6 +14,9 @@ async function apiFetch<T>(endpoint: string, opts: FetchOptions = {}): Promise<T
   })
   if (!res.ok) throw new Error(`API-Football ${res.status}: ${endpoint}`)
   const json = await res.json()
+  if (json.errors && typeof json.errors === "object" && Object.keys(json.errors).length > 0) {
+    throw new Error(`API-Football plan restriction: ${JSON.stringify(json.errors)}`)
+  }
   return json.response as T
 }
 

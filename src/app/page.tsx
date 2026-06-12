@@ -2,6 +2,7 @@ import Link from "next/link"
 import { getPartidosByRango, getPrediccionLatest } from "@/lib/db/queries"
 import { GridGrupos } from "@/components/home/GridGrupos"
 import { PartidoCard } from "@/components/home/PartidoCard"
+import { Comparativo } from "@/components/home/Comparativo"
 
 const JORNADAS = [
   { n: 1, label: "Jornada 1", desde: "2026-06-11", hasta: "2026-06-19" },
@@ -16,8 +17,9 @@ export default async function HomePage({ searchParams }: Props) {
   const jNum = j ? parseInt(j) : 1
   const jornada = JORNADAS.find((x) => x.n === jNum) ?? JORNADAS[0]
   const isGrupos = vista === "grupos"
+  const isResultados = vista === "resultados"
 
-  const partidos = isGrupos ? [] : await getPartidosByRango(jornada.desde, jornada.hasta)
+  const partidos = isGrupos || isResultados ? [] : await getPartidosByRango(jornada.desde, jornada.hasta)
   const predicciones = await Promise.all(partidos.map((p) => getPrediccionLatest(p.id)))
   const prediccionMap = new Map(partidos.map((p, i) => [p.id, predicciones[i]]))
 
@@ -59,13 +61,33 @@ export default async function HomePage({ searchParams }: Props) {
         >
           Grupos
         </Link>
+        <Link
+          href="/?vista=resultados"
+          className="px-4 py-2.5 text-[10px] tracking-[0.2em] uppercase whitespace-nowrap transition-colors border-b-2 -mb-px"
+          style={{
+            color: isResultados ? "var(--accent)" : "var(--muted)",
+            borderBottomColor: isResultados ? "var(--accent)" : "transparent",
+          }}
+        >
+          Aciertos
+        </Link>
       </nav>
 
       {/* Vista grupos */}
       {isGrupos && <GridGrupos />}
 
+      {/* Vista resultados vs predicciones */}
+      {isResultados && (
+        <section className="flex flex-col gap-3">
+          <h2 className="text-[10px] tracking-[0.3em] uppercase text-[var(--muted)] border-b border-[var(--border)] pb-2 font-bold">
+            Predicciones vs Realidad
+          </h2>
+          <Comparativo />
+        </section>
+      )}
+
       {/* Vista jornada */}
-      {!isGrupos && (
+      {!isGrupos && !isResultados && (
         <div className="flex flex-col gap-8">
           {[...byDate.entries()].map(([dia, plist]) => {
             const fecha = new Date(dia + "T00:00:00Z").toLocaleDateString("es-ES", {

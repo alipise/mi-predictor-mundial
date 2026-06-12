@@ -10,6 +10,8 @@ function rowToPartido(row: Record<string, unknown>): Partido {
     grupo: (row.grupo as string | null) ?? undefined,
     fechaUtc: row.fecha_utc as string,
     estadio: row.estadio as string,
+    golesLocal: (row.goles_local as number | null) ?? null,
+    golesVisitante: (row.goles_visitante as number | null) ?? null,
     equipoLocal: {
       id: row.local_id as number,
       nombre: row.local_nombre as string,
@@ -39,6 +41,7 @@ function rowToPrediccion(row: Record<string, unknown>): Prediccion {
 const PARTIDO_SELECT = `
   SELECT
     p.id, p.fase, p.grupo, p.fecha_utc, p.estadio,
+    p.goles_local, p.goles_visitante,
     el.id    as local_id,   el.nombre as local_nombre,   el.codigo as local_codigo,
     el.grupo as local_grupo, el.logo_url as local_logo,
     ev.id    as visita_id,  ev.nombre as visita_nombre,  ev.codigo as visita_codigo,
@@ -192,6 +195,32 @@ export async function insertEstadistica(e: EstadisticaEquipo): Promise<void> {
       e.xgFavor, e.xgContra, e.corners, e.tarjetasAmarillas, e.tarjetasRojas, e.fecha,
     ],
   })
+}
+
+// --- Jugadores ---
+
+// --- Resultados ---
+
+export async function actualizarResultado(
+  partidoId: number,
+  golesLocal: number,
+  golesVisitante: number,
+): Promise<void> {
+  const db = getDb()
+  await db.execute({
+    sql: `UPDATE partidos SET goles_local = ?, goles_visitante = ? WHERE id = ?`,
+    args: [golesLocal, golesVisitante, partidoId],
+  })
+}
+
+export async function getPartidosConResultado(): Promise<(Partido & { prediccion: Prediccion | null })[]> {
+  const db = getDb()
+  const rs = await db.execute(
+    `${PARTIDO_SELECT} WHERE p.goles_local IS NOT NULL ORDER BY p.fecha_utc DESC`,
+  )
+  const partidos = rs.rows.map((r) => rowToPartido(r as unknown as Record<string, unknown>))
+  const predicciones = await Promise.all(partidos.map((p) => getPrediccionLatest(p.id)))
+  return partidos.map((p, i) => ({ ...p, prediccion: predicciones[i] }))
 }
 
 // --- Jugadores ---

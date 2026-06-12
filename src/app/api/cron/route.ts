@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { runCron } from "@/lib/cron/run"
 
-export async function POST(req: Request) {
+async function handleCron(req: Request) {
   const auth = req.headers.get("authorization") ?? ""
   const secret = process.env.CRON_SECRET ?? ""
 
@@ -17,3 +17,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
+
+// Vercel Cron sends GET requests
+export async function GET(req: Request) { return handleCron(req) }
+// Manual trigger via POST
+export async function POST(req: Request) { return handleCron(req) }

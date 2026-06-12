@@ -14,6 +14,8 @@ export type Partido = {
   equipoVisitante: Equipo
   fechaUtc: string
   estadio: string
+  golesLocal: number | null
+  golesVisitante: number | null
 }
 
 export type PrediccionMercado = {
