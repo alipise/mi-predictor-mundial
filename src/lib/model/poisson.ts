@@ -6,10 +6,11 @@ export function poissonPmf(lambda: number, k: number): number {
 }
 
 // Returns P[i][j] = P(home scores i, away scores j), independent Poisson
+// maxGoals=8 captures >99.9% of probability mass for λ≤4
 export function bivariatePoisson(
   lambdaHome: number,
   lambdaAway: number,
-  maxGoals = 6
+  maxGoals = 8
 ): number[][] {
   const matrix: number[][] = []
   for (let i = 0; i <= maxGoals; i++) {

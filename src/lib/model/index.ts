@@ -82,9 +82,10 @@ const RATINGS_BASE: Record<number, { ataque: number; defensa: number }> = {
   148: { ataque: 0.72, defensa: 1.22 }, // PAN
 }
 
-// Qualifier campaigns include early rounds against minnows (Japan 14-0, Norway 11-0).
-// Cap per-match goals at 5 so blowouts don't dominate the average.
-const MAX_GOLES_PARTIDO = 5
+// Cap per-match goals to prevent outlier blowouts in qualifiers from
+// dominating the average. Set to 7 — still penalizes extreme minnow results
+// (14-0) while letting legitimate 5-0 or 6-0 performances count fully.
+const MAX_GOLES_PARTIDO = 7
 
 // Bayesian blending: treat RATINGS_BASE as a prior worth this many pseudo-matches.
 // Teams with few data points stay close to the prior; teams with 20+ matches
