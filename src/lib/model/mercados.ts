@@ -40,26 +40,23 @@ export function golesEquipo(m: Matriz, equipo: "local" | "visitante", linea: num
   return { over, under }
 }
 
-// Hybrid mode: balances statistical accuracy with intuitive readability.
+// Most probable score, always consistent with the 1x2 headline.
 //
-// - Competitive match (neither team exceeds 46% win probability):
-//   Uses the GLOBAL mode — the single highest-probability cell across the whole
-//   matrix. 1-1 naturally surfaces here because for two ~equal Poisson processes
-//   it genuinely is the most likely individual score.
+// The score shown must live in the same zone as the most likely 1x2 outcome:
+// if the model says local wins, the score is a local win (i > j); if it says
+// visitante, a visitante win (j > i); if empate is the single most likely
+// outcome of the three, a draw (i === j). Within that zone we pick the
+// highest-probability cell.
 //
-// - Clear favourite (one team > 46% win probability):
-//   Uses ZONE-CONDITIONED mode — searches only within the predicted winner's cells
-//   (i>j for local, j>i for visitante, i==j for draw). This avoids the
-//   counterintuitive situation where France 54% vs Senegal is headlined "1-1".
-//
-// The 46% threshold comes from empirical calibration on the 72 WC2026 fixtures:
-// it gives ~9 draws (13%), eliminating false draws for clear favourites while
-// correctly surfacing them for genuinely even matchups.
+// Why not the unconditional argmax of the matrix? Because P(1-1) often beats
+// P(1-0) even when one team is a clear 1x2 favourite (Poisson math), which
+// produced headlines like "France 54% to win... predicted score 1-1". The
+// headline score and the headline winner must never contradict each other.
 export function marcadorMasProbable(
   m: Matriz,
   r1x2?: { local: number; empate: number; visitante: number }
 ) {
-  // Helper: global mode (unconditional argmax)
+  // Helper: global mode (unconditional argmax), used when no r1x2 is provided
   const globalMode = (() => {
     let maxP = 0, li = 0, lj = 0
     for (let i = 0; i < m.length; i++)
@@ -68,15 +65,10 @@ export function marcadorMasProbable(
     return { local: li, visitante: lj, probabilidad: maxP }
   })()
 
-  // No r1x2 available: fall back to global mode
   if (!r1x2) return globalMode
 
-  const maxWinner = Math.max(r1x2.local, r1x2.visitante)
-
-  // Competitive match: global mode (draws can surface naturally)
-  if (maxWinner <= 0.46) return globalMode
-
-  // Clear favourite: zone-conditioned mode
+  // Zone = argmax of the 1x2 market. Draws appear exactly when empate is
+  // the most likely of the three outcomes.
   type Zone = "local" | "empate" | "visitante"
   const maxAll = Math.max(r1x2.local, r1x2.empate, r1x2.visitante)
   let zone: Zone = "local"
