@@ -128,8 +128,8 @@ export function predecirPartido(partido: Partido, stats: StatsPartido): Predicci
   const matriz = applyDixonColes(matrizRaw, lambdaLocal, lambdaVisitante)
 
   const r1x2 = resultado1x2(matriz)
-  // Global mode: the single highest-probability scoreline in the full matrix
-  const marcador = marcadorMasProbable(matrizRaw)
+  // Hybrid mode: global for competitive matches, zone-conditioned for clear favourites
+  const marcador = marcadorMasProbable(matrizRaw, r1x2)
   const mediaTarjetas =
     mediaStats(stats.local, "tarjetasAmarillas") + mediaStats(stats.visitante, "tarjetasAmarillas")
   const mediaCorners =
