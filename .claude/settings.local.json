@@ -56,7 +56,12 @@
       "mcp__Claude_Preview__preview_start",
       "Bash(curl -sSfL https://get.tur.so/install.sh)",
       "Bash(bash)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git push *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{time_total}s\" https://mi-predictor-mundial-theta.vercel.app/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{time_total}s\" \"https://mi-predictor-mundial-theta.vercel.app/?vista=resultados\")",
+      "Bash(curl -s 'https://v3.football.api-sports.io/fixtures?league=1&season=2026' -H 'x-apisports-key: 16d14a26f679d08645d1e02f37a32c1e')",
+      "Bash(pnpm exec *)"
     ]
   }
 }

@@ -88,10 +88,10 @@ const RATINGS_BASE: Record<number, { ataque: number; defensa: number }> = {
 const MAX_GOLES_PARTIDO = 7
 
 // Bayesian blending: treat RATINGS_BASE as a prior worth this many pseudo-matches.
-// Teams with few data points stay close to the prior; teams with 20+ matches
-// are mostly data-driven. This prevents Curacao's 8-0 vs Aruba from making
-// them look stronger than Germany.
-const PRIOR_PSEUDO_PARTIDOS = 10
+// Lowered to 6 so real data has more weight, increasing differentiation between
+// strong and weak teams. Prevents the prior from flattening all matches to near-equal
+// lambdas (which was causing 1-1 to be the modal score for too many matches).
+const PRIOR_PSEUDO_PARTIDOS = 6
 
 function fuerzaEquipo(stats: StatsPartido["local"], equipoId: number) {
   const base = RATINGS_BASE[equipoId] ?? { ataque: 1, defensa: 1 }
@@ -128,8 +128,8 @@ export function predecirPartido(partido: Partido, stats: StatsPartido): Predicci
   const matriz = applyDixonColes(matrizRaw, lambdaLocal, lambdaVisitante)
 
   const r1x2 = resultado1x2(matriz)
-  // Raw Poisson for score, conditioned on predicted winner zone
-  const marcador = marcadorMasProbable(matrizRaw, r1x2)
+  // Global mode: the single highest-probability scoreline in the full matrix
+  const marcador = marcadorMasProbable(matrizRaw)
   const mediaTarjetas =
     mediaStats(stats.local, "tarjetasAmarillas") + mediaStats(stats.visitante, "tarjetasAmarillas")
   const mediaCorners =
@@ -143,12 +143,20 @@ export function predecirPartido(partido: Partido, stats: StatsPartido): Predicci
         [`${marcador.local}-${marcador.visitante}`]: marcador.probabilidad,
       },
     },
-    { mercado: "total_goles", linea: 2.5, probabilidades: totalGoles(matriz, 2.5) },
+    // Lambda values stored for display ("X goles esperados por equipo")
+    { mercado: "lambdas", probabilidades: { local: lambdaLocal, visitante: lambdaVisitante } },
+    // Expected averages for cards and corners (stored for UI display)
+    { mercado: "medias", probabilidades: { tarjetas: mediaTarjetas, corners: mediaCorners } },
+    // Total goals at three lines
     { mercado: "total_goles", linea: 1.5, probabilidades: totalGoles(matriz, 1.5) },
+    { mercado: "total_goles", linea: 2.5, probabilidades: totalGoles(matriz, 2.5) },
     { mercado: "total_goles", linea: 3.5, probabilidades: totalGoles(matriz, 3.5) },
     { mercado: "ambos_anotan", probabilidades: ambosMArcan(matriz) },
+    // Goals per team at two thresholds
     { mercado: "goles_local", linea: 0.5, probabilidades: golesEquipo(matriz, "local", 0.5) },
+    { mercado: "goles_local", linea: 1.5, probabilidades: golesEquipo(matriz, "local", 1.5) },
     { mercado: "goles_visitante", linea: 0.5, probabilidades: golesEquipo(matriz, "visitante", 0.5) },
+    { mercado: "goles_visitante", linea: 1.5, probabilidades: golesEquipo(matriz, "visitante", 1.5) },
     ...Object.entries(marketLinea(mediaTarjetas, [3.5, 4.5])).map(([l, p]) => ({
       mercado: "tarjetas",
       linea: parseFloat(l),

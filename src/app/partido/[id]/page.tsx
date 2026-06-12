@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { getPartidoById, getPrediccionLatest, getHistorialPredicciones, getEstadisticasEquipo } from "@/lib/db/queries"
 import { MarcadorPredicho } from "@/components/partido/MarcadorPredicho"
 import { Resultado1x2 } from "@/components/partido/Resultado1x2"
-import { MercadoBarra } from "@/components/partido/MercadoBarra"
+import { MercadosPanelEstadistico } from "@/components/partido/MercadosPanelEstadistico"
 import { DistribucionGoles } from "@/components/partido/DistribucionGoles"
 import { GoleadoresRanking } from "@/components/partido/GoleadoresRanking"
 import { HistorialPredicciones } from "@/components/partido/HistorialPredicciones"
@@ -32,15 +32,7 @@ export default async function PartidoPage({ params }: Props) {
   ])
 
   const sinHistorico = statsLocal.length === 0 && statsVisitante.length === 0
-
   const m1x2 = prediccion?.mercados.find((m) => m.mercado === "resultado_1x2")
-  const mGoles25 = prediccion?.mercados.find((m) => m.mercado === "total_goles" && m.linea === 2.5)
-  const mGoles15 = prediccion?.mercados.find((m) => m.mercado === "total_goles" && m.linea === 1.5)
-  const mAmbos = prediccion?.mercados.find((m) => m.mercado === "ambos_anotan")
-  const mTarjetas35 = prediccion?.mercados.find((m) => m.mercado === "tarjetas" && m.linea === 3.5)
-  const mTarjetas45 = prediccion?.mercados.find((m) => m.mercado === "tarjetas" && m.linea === 4.5)
-  const mCorners95 = prediccion?.mercados.find((m) => m.mercado === "corners" && m.linea === 9.5)
-  const mCorners105 = prediccion?.mercados.find((m) => m.mercado === "corners" && m.linea === 10.5)
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 flex flex-col gap-0">
@@ -92,28 +84,15 @@ export default async function PartidoPage({ params }: Props) {
             codigoVisitante={partido.equipoVisitante.codigo}
           />
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {mGoles25 && (
-              <MercadoBarra mercado={mGoles25} titulo="Total goles · O/U 2.5" etiquetas={{ over: "Over 2.5", under: "Under 2.5" }} ordenForzado={["over", "under"]} />
-            )}
-            {mGoles15 && (
-              <MercadoBarra mercado={mGoles15} titulo="Total goles · O/U 1.5" etiquetas={{ over: "Over 1.5", under: "Under 1.5" }} ordenForzado={["over", "under"]} />
-            )}
-            {mAmbos && (
-              <MercadoBarra mercado={mAmbos} titulo="Ambos anotan" etiquetas={{ si: "Sí", no: "No" }} ordenForzado={["si", "no"]} />
-            )}
-            {mTarjetas35 && (
-              <MercadoBarra mercado={mTarjetas35} titulo="Tarjetas · O/U 3.5" etiquetas={{ over: "Over 3.5", under: "Under 3.5" }} ordenForzado={["over", "under"]} />
-            )}
-            {mTarjetas45 && (
-              <MercadoBarra mercado={mTarjetas45} titulo="Tarjetas · O/U 4.5" etiquetas={{ over: "Over 4.5", under: "Under 4.5" }} ordenForzado={["over", "under"]} />
-            )}
-            {mCorners95 && (
-              <MercadoBarra mercado={mCorners95} titulo="Corners · O/U 9.5" etiquetas={{ over: "Over 9.5", under: "Under 9.5" }} ordenForzado={["over", "under"]} />
-            )}
-            {mCorners105 && (
-              <MercadoBarra mercado={mCorners105} titulo="Corners · O/U 10.5" etiquetas={{ over: "Over 10.5", under: "Under 10.5" }} ordenForzado={["over", "under"]} />
-            )}
+          <div
+            className="bg-[var(--surface)] border border-[var(--border)] p-6"
+            style={{ borderLeft: "3px solid var(--accent)" }}
+          >
+            <MercadosPanelEstadistico
+              prediccion={prediccion}
+              codigoLocal={partido.equipoLocal.codigo}
+              codigoVisitante={partido.equipoVisitante.codigo}
+            />
           </div>
 
           <GoleadoresRanking

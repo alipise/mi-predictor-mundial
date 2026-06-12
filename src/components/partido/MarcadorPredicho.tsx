@@ -12,8 +12,21 @@ function getMarcador(prediccion: Prediccion | null) {
   return { local, visitante, pct: m.probabilidades[key] }
 }
 
+function getGoleadaProb(prediccion: Prediccion | null): number {
+  if (!prediccion) return 0
+  const matrizD = prediccion.mercados.find((m) => m.mercado === "matriz_display")
+  if (!matrizD) return 0
+  let p = 0
+  for (const [score, prob] of Object.entries(matrizD.probabilidades)) {
+    const [gl, gv] = score.split("-").map(Number)
+    if (Math.abs(gl - gv) >= 4) p += prob as number
+  }
+  return p
+}
+
 export function MarcadorPredicho({ partido, prediccion }: Props) {
   const marcador = getMarcador(prediccion)
+  const pGoleada = getGoleadaProb(prediccion)
   const fecha = new Date(partido.fechaUtc).toLocaleDateString("es-ES", {
     day: "numeric",
     month: "short",
@@ -80,11 +93,22 @@ export function MarcadorPredicho({ partido, prediccion }: Props) {
       </div>
 
       {/* Meta info */}
-      <div className="flex flex-col items-center gap-1.5">
+      <div className="flex flex-col items-center gap-2">
         {marcador && (
           <div className="flex items-center gap-2 bg-[var(--accent-dim)] border border-[var(--accent)] px-3 py-1">
             <span className="text-[10px] text-[var(--accent)] tracking-[0.3em] uppercase font-bold">
-              Resultado más probable · {(marcador.pct * 100).toFixed(0)}%
+              Marcador más probable · {(marcador.pct * 100).toFixed(0)}%
+            </span>
+          </div>
+        )}
+        {pGoleada >= 0.15 && (
+          <div className="flex items-center gap-2 border border-[var(--border)] px-3 py-1">
+            <span className="text-[10px] text-[var(--muted)] tracking-[0.2em] uppercase font-bold">
+              Goleada posible ·{" "}
+              <span className="tabular-nums" style={{ color: "var(--foreground)" }}>
+                {Math.round(pGoleada * 100)}%
+              </span>{" "}
+              de prob diferencia 4+ goles
             </span>
           </div>
         )}
