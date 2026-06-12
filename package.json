@@ -11,6 +11,7 @@
     "import:recent": "tsx --env-file=.env.local scripts/import-recent-stats.ts",
     "import:wc2022": "tsx --env-file=.env.local scripts/import-wc2022-stats.ts",
     "import:resultados": "tsx --env-file=.env.local scripts/import-resultados.ts",
+    "import:full": "tsx --env-file=.env.local scripts/import-2025-2026.ts",
     "seed": "tsx --env-file=.env.local scripts/seed.ts"
   },
   "dependencies": {
