@@ -99,7 +99,6 @@ export default async function HomePage({ searchParams }: Props) {
               weekday: "long",
               day: "numeric",
               month: "long",
-              timeZone: "UTC",
             })
             return (
               <section key={dia} className="flex flex-col gap-3">

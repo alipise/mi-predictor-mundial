@@ -32,7 +32,6 @@ export function MarcadorPredicho({ partido, prediccion }: Props) {
     month: "short",
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: "UTC",
   })
 
   return (
@@ -113,7 +112,7 @@ export function MarcadorPredicho({ partido, prediccion }: Props) {
           </div>
         )}
         <span className="text-[11px] text-[var(--muted)]">
-          {fecha} UTC · {partido.estadio}
+          {fecha} · {partido.estadio}
         </span>
       </div>
     </div>

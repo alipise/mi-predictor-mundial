@@ -14,7 +14,7 @@ export function HistorialPredicciones({ historial }: Props) {
     return (
       <p className="text-[10px] text-[var(--muted)]">
         Predicción calculada:{" "}
-        {ts ? new Date(ts).toLocaleString("es-ES", { timeZone: "UTC" }) + " UTC" : "N/D"}
+        {ts ? new Date(ts).toLocaleString("es-ES") : "N/D"}
       </p>
     )
   }
@@ -28,12 +28,12 @@ export function HistorialPredicciones({ historial }: Props) {
     })
 
   const ultimo = historial[0]
-  const ts = new Date(ultimo.timestamp).toLocaleString("es-ES", { timeZone: "UTC" })
+  const ts = new Date(ultimo.timestamp).toLocaleString("es-ES")
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-3">
-        <p className="text-[10px] text-[var(--muted)]">Predicción calculada: {ts} UTC</p>
+        <p className="text-[10px] text-[var(--muted)]">Predicción calculada: {ts}</p>
         <button
           onClick={() => setAbierto((v) => !v)}
           className="text-[10px] text-[var(--accent)] tracking-wider uppercase hover:underline"

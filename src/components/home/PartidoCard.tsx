@@ -53,7 +53,6 @@ export function PartidoCard({ partido, prediccion }: Props) {
   const hora = new Date(partido.fechaUtc).toLocaleTimeString("es-ES", {
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: "UTC",
   })
 
   return (

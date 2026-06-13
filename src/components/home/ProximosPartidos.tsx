@@ -33,12 +33,10 @@ export async function ProximosPartidos() {
         const fecha = new Date(partido.fechaUtc).toLocaleDateString("es-ES", {
           day: "numeric",
           month: "short",
-          timeZone: "UTC",
         })
         const hora = new Date(partido.fechaUtc).toLocaleTimeString("es-ES", {
           hour: "2-digit",
           minute: "2-digit",
-          timeZone: "UTC",
         })
 
         return (
@@ -64,7 +62,7 @@ export async function ProximosPartidos() {
             </div>
             <div className="hidden sm:flex items-center gap-4 text-xs text-[var(--muted)]">
               <span>{partido.grupo ? `Gr. ${partido.grupo}` : partido.fase}</span>
-              <span>{fecha} · {hora} UTC</span>
+              <span>{fecha} · {hora}</span>
             </div>
             <div className="flex items-center gap-3 shrink-0 ml-4">
               {pL !== null ? (
