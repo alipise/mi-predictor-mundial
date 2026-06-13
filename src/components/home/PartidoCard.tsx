@@ -60,7 +60,7 @@ export function PartidoCard({ partido, prediccion }: Props) {
     <Link
       href={`/partido/${partido.id}`}
       className="group flex flex-col bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--accent)] transition-all duration-150 overflow-hidden relative"
-      style={{ filter: yaJugado ? "grayscale(1) opacity(0.7)" : "none" }}
+      style={{ opacity: yaJugado ? 0.6 : 1 }}
     >
       {/* Orange top accent bar — siempre visible */}
       <div className="h-[2px] w-full bg-[var(--accent)] opacity-40 group-hover:opacity-100 transition-opacity" />
@@ -75,10 +75,10 @@ export function PartidoCard({ partido, prediccion }: Props) {
             <div className="flex items-center gap-1.5">
               {acierto !== null && (
                 <span
-                  className="w-2 h-2 rounded-full shrink-0"
+                  className="w-3 h-3 rounded-full shrink-0 transition-opacity"
                   style={{
                     background: acierto ? "#10b981" : "#ef4444",
-                    filter: "saturate(2)",
+                    opacity: yaJugado ? 1 : 0.7,
                   }}
                 />
               )}
