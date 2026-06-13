@@ -78,6 +78,7 @@ export function PartidoCard({ partido, prediccion }: Props) {
                   className="w-2 h-2 rounded-full shrink-0"
                   style={{
                     background: acierto ? "#10b981" : "#ef4444",
+                    filter: "saturate(2)",
                   }}
                 />
               )}
