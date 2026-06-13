@@ -14,6 +14,7 @@ type Props = { searchParams: Promise<{ j?: string; vista?: string }> }
 
 export default async function HomePage({ searchParams }: Props) {
   const { j, vista } = await searchParams
+  // Vercel test: cambio visible
   const jNum = j ? parseInt(j) : 1
   const jornada = JORNADAS.find((x) => x.n === jNum) ?? JORNADAS[0]
   const isGrupos = vista === "grupos"
