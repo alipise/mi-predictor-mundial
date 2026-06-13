@@ -21,6 +21,9 @@ export function PartidoCard({ partido, prediccion }: Props) {
 
   const marcadorKey = marcadorM ? Object.keys(marcadorM.probabilidades)[0] : null
 
+  // Detectar si ya se jugó (tiene resultado real)
+  const yaJugado = partido.golesLocal !== null && partido.golesVisitante !== null
+
   const hora = new Date(partido.fechaUtc).toLocaleTimeString("es-ES", {
     hour: "2-digit",
     minute: "2-digit",
@@ -30,7 +33,8 @@ export function PartidoCard({ partido, prediccion }: Props) {
   return (
     <Link
       href={`/partido/${partido.id}`}
-      className="group flex flex-col bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--accent)] transition-all duration-150 overflow-hidden"
+      className="group flex flex-col bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--accent)] transition-all duration-150 overflow-hidden relative"
+      style={{ filter: yaJugado ? "grayscale(1) opacity(0.7)" : "none" }}
     >
       {/* Orange top accent bar — siempre visible */}
       <div className="h-[2px] w-full bg-[var(--accent)] opacity-40 group-hover:opacity-100 transition-opacity" />
@@ -40,7 +44,14 @@ export function PartidoCard({ partido, prediccion }: Props) {
         <span className="text-[9px] tracking-[0.35em] uppercase text-[var(--muted)] font-bold">
           {partido.grupo ? `Grupo ${partido.grupo}` : partido.fase}
         </span>
-        <span className="text-[10px] tabular-nums text-[var(--muted)]">{hora} UTC</span>
+        <div className="flex items-center gap-2">
+          {yaJugado && (
+            <span className="text-[8px] tracking-[0.25em] uppercase font-bold px-1.5 py-0.5 border border-[var(--muted)] text-[var(--muted)]">
+              ✓ Jugado
+            </span>
+          )}
+          <span className="text-[10px] tabular-nums text-[var(--muted)]">{hora} UTC</span>
+        </div>
       </div>
 
       {/* Cuerpo: equipos + probabilidades */}
