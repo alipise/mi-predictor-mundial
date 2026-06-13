@@ -108,5 +108,5 @@ export function marketLinea(mediaTotal: number, lineas: number[]) {
 // Returns the 6x6 submatrix (0-0 to 5-5) for heatmap display.
 // Shows goleada territory (4-0, 5-0, etc.) that the UI must render.
 export function matrizDisplay(m: Matriz): number[][] {
-  return m.slice(0, 6).map((row) => row.slice(0, 6))
+  return m.slice(0, 8).map((row) => row.slice(0, 8))
 }

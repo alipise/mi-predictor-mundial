@@ -77,7 +77,10 @@
       "Bash(curl -s \"https://mi-predictor-mundial-theta.vercel.app/\")",
       "Bash(curl -s -I \"https://mi-predictor-mundial-theta.vercel.app/\")",
       "Bash(curl -s \"https://api.github.com/repos/alipise/mi-predictor-mundial/commits/main\")",
-      "Bash(timeout 180 bash -c 'until curl -s \"https://mi-predictor-mundial-theta.vercel.app/\" 2>&1 | grep -q \"Vercel test\"; do echo \"Esperando Vercel...\"; sleep 10; done; echo \"✅ VERCEL DEPLOYÓ EL CAMBIO\"')"
+      "Bash(timeout 180 bash -c 'until curl -s \"https://mi-predictor-mundial-theta.vercel.app/\" 2>&1 | grep -q \"Vercel test\"; do echo \"Esperando Vercel...\"; sleep 10; done; echo \"✅ VERCEL DEPLOYÓ EL CAMBIO\"')",
+      "Bash(curl -s http://localhost:3000/api/ultimo-calculo)",
+      "Bash(timeout 30 curl -X POST -s http://localhost:3000/api/recalcular)",
+      "Bash(curl -X POST -s --max-time 30 http://localhost:3000/api/recalcular)"
     ]
   }
 }
