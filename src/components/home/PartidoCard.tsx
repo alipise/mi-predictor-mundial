@@ -7,6 +7,24 @@ type Props = {
   prediccion: Prediccion | null
 }
 
+function outcome(gl: number, gv: number): "local" | "empate" | "visitante" {
+  if (gl > gv) return "local"
+  if (gl === gv) return "empate"
+  return "visitante"
+}
+
+function predOutcome(pred: Prediccion): "local" | "empate" | "visitante" | null {
+  const r1x2 = pred.mercados.find((m) => m.mercado === "resultado_1x2")
+  if (!r1x2) return null
+  const { local, empate, visitante } = r1x2.probabilidades as {
+    local: number; empate: number; visitante: number
+  }
+  const max = Math.max(local, empate, visitante)
+  if (local === max) return "local"
+  if (empate === max) return "empate"
+  return "visitante"
+}
+
 export function PartidoCard({ partido, prediccion }: Props) {
   const r1x2 = prediccion?.mercados.find((m) => m.mercado === "resultado_1x2")
   const marcadorM = prediccion?.mercados.find((m) => m.mercado === "marcador_probable")
@@ -23,6 +41,14 @@ export function PartidoCard({ partido, prediccion }: Props) {
 
   // Detectar si ya se jugó (tiene resultado real)
   const yaJugado = partido.golesLocal !== null && partido.golesVisitante !== null
+
+  // Calcular si fue acierto (solo si ya se jugó y hay predicción)
+  let acierto: boolean | null = null
+  if (yaJugado && prediccion) {
+    const real = outcome(partido.golesLocal!, partido.golesVisitante!)
+    const pred = predOutcome(prediccion)
+    acierto = pred !== null && pred === real
+  }
 
   const hora = new Date(partido.fechaUtc).toLocaleTimeString("es-ES", {
     hour: "2-digit",
@@ -46,9 +72,19 @@ export function PartidoCard({ partido, prediccion }: Props) {
         </span>
         <div className="flex items-center gap-2">
           {yaJugado && (
-            <span className="text-[8px] tracking-[0.25em] uppercase font-bold px-1.5 py-0.5 border border-[var(--muted)] text-[var(--muted)]">
-              ✓ Jugado
-            </span>
+            <div className="flex items-center gap-1.5">
+              {acierto !== null && (
+                <span
+                  className="w-2 h-2 rounded-full shrink-0"
+                  style={{
+                    background: acierto ? "#10b981" : "#ef4444",
+                  }}
+                />
+              )}
+              <span className="text-[8px] tracking-[0.25em] uppercase font-bold px-1.5 py-0.5 border border-[var(--muted)] text-[var(--muted)]">
+                ✓ Jugado
+              </span>
+            </div>
           )}
           <span className="text-[10px] tabular-nums text-[var(--muted)]">{hora} UTC</span>
         </div>
