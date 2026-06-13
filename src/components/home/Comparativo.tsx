@@ -39,6 +39,8 @@ function FilaPartido({ p }: { p: PartidoConPred }) {
   const pred = p.prediccion ? predOutcome(p.prediccion) : null
   const acierto = pred !== null && pred === real
   const r1x2 = p.prediccion?.mercados.find((m) => m.mercado === "resultado_1x2")
+  const marcador = p.prediccion?.mercados.find((m) => m.mercado === "marcador_probable")
+  const marcadorPred = marcador ? Object.keys(marcador.probabilidades)[0] : null
   const probLocal = r1x2 ? (r1x2.probabilidades.local as number) : null
   const probEmpate = r1x2 ? (r1x2.probabilidades.empate as number) : null
   const probVisita = r1x2 ? (r1x2.probabilidades.visitante as number) : null
@@ -92,12 +94,9 @@ function FilaPartido({ p }: { p: PartidoConPred }) {
         )}
       </div>
 
-      {/* Outcome predicho */}
-      <div className="shrink-0 text-[10px] tabular-nums text-[var(--muted)] hidden sm:block">
-        {pred === "local" ? p.equipoLocal.codigo
-          : pred === "visitante" ? p.equipoVisitante.codigo
-          : pred === "empate" ? "X"
-          : "—"}
+      {/* Marcador predicho */}
+      <div className="shrink-0 text-xs tabular-nums font-bold hidden sm:block" style={{ color: acierto ? "var(--accent)" : "var(--foreground)" }}>
+        {marcadorPred ? marcadorPred : "—"}
       </div>
 
       {/* Acierto */}
@@ -163,7 +162,7 @@ export async function Comparativo() {
       <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 px-4 py-2 bg-[var(--surface)] border border-[var(--border)] border-b-0">
         <span className="text-[9px] tracking-[0.2em] uppercase text-[var(--border)]">Partido</span>
         <span className="hidden sm:block text-[9px] tracking-[0.2em] uppercase text-[var(--border)]">Probabilidades</span>
-        <span className="hidden sm:block text-[9px] tracking-[0.2em] uppercase text-[var(--border)]">Predijo</span>
+        <span className="hidden sm:block text-[9px] tracking-[0.2em] uppercase text-[var(--border)]">Marcador predicho</span>
         <span className="text-[9px] tracking-[0.2em] uppercase text-[var(--border)]">OK</span>
       </div>
 
