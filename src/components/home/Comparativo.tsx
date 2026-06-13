@@ -99,15 +99,22 @@ function FilaPartido({ p }: { p: PartidoConPred }) {
         {marcadorPred ? marcadorPred : "—"}
       </div>
 
-      {/* Acierto */}
-      <div className="shrink-0 w-7 text-center">
-        {pred === null ? (
-          <span className="text-[10px] text-[var(--border)]">—</span>
-        ) : acierto ? (
-          <span className="text-sm font-black" style={{ color: "var(--accent)" }}>✓</span>
-        ) : (
-          <span className="text-sm font-black text-[var(--muted)]">✗</span>
-        )}
+      {/* Acierto — bullet point de color */}
+      <div className="shrink-0 flex items-center justify-center gap-1.5">
+        <span
+          className="w-2.5 h-2.5 rounded-full shrink-0"
+          style={{
+            background:
+              pred === null
+                ? "var(--border)"
+                : acierto
+                  ? "#10b981"
+                  : "#ef4444",
+          }}
+        />
+        <span className="text-xs font-bold" style={{ color: acierto ? "#10b981" : pred === null ? "var(--border)" : "#ef4444" }}>
+          {pred === null ? "—" : acierto ? "✓" : "✗"}
+        </span>
       </div>
     </div>
   )
