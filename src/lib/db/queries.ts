@@ -243,3 +243,24 @@ export async function getJugadoresEquipo(equipoId: number): Promise<Jugador[]> {
     }
   })
 }
+
+// --- Cálculos de Predicciones ---
+
+export async function getUltimoCalculo(): Promise<{ timestamp: string; partidos: number } | null> {
+  const db = getDb()
+  const rs = await db.execute("SELECT timestamp_utc, partidos_actualizados FROM calculos_predicciones ORDER BY timestamp_utc DESC LIMIT 1")
+  if (rs.rows.length === 0) return null
+  const row = rs.rows[0] as unknown as Record<string, unknown>
+  return {
+    timestamp: row.timestamp_utc as string,
+    partidos: row.partidos_actualizados as number,
+  }
+}
+
+export async function guardarCalculo(partidosActualizados: number): Promise<void> {
+  const db = getDb()
+  await db.execute({
+    sql: "INSERT OR REPLACE INTO calculos_predicciones (id, timestamp_utc, partidos_actualizados) VALUES (1, ?, ?)",
+    args: [new Date().toISOString(), partidosActualizados],
+  })
+}

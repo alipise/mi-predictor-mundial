@@ -3,6 +3,7 @@ import { getPartidosByRango, getPrediccionLatest } from "@/lib/db/queries"
 import { GridGrupos } from "@/components/home/GridGrupos"
 import { PartidoCard } from "@/components/home/PartidoCard"
 import { Comparativo } from "@/components/home/Comparativo"
+import { EstadoCalculo } from "@/components/home/EstadoCalculo"
 
 const JORNADAS = [
   { n: 1, label: "Jornada 1", desde: "2026-06-11", hasta: "2026-06-19" },
@@ -33,6 +34,9 @@ export default async function HomePage({ searchParams }: Props) {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 flex flex-col gap-8">
+
+      {/* Estado del cálculo de predicciones */}
+      <EstadoCalculo />
 
       {/* Tab navigation */}
       <nav className="flex items-center gap-px border-b border-[var(--border)] overflow-x-auto">

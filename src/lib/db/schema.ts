@@ -58,6 +58,12 @@ export async function initSchema() {
 
     CREATE INDEX IF NOT EXISTS idx_estadisticas_equipo
       ON estadisticas_equipo(equipo_id, fecha DESC);
+
+    CREATE TABLE IF NOT EXISTS calculos_predicciones (
+      id INTEGER PRIMARY KEY,
+      timestamp_utc TEXT NOT NULL,
+      partidos_actualizados INTEGER NOT NULL DEFAULT 0
+    );
   `)
 
   // Migrations (idempotent — silently skip if column already exists)

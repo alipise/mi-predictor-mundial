@@ -7,6 +7,7 @@ import {
   insertPrediccion,
   insertEstadistica,
   actualizarResultado,
+  guardarCalculo,
 } from "@/lib/db/queries"
 import { predecirPartido } from "@/lib/model"
 import type { StatsPartido, Partido } from "@/types"
@@ -165,7 +166,7 @@ async function syncStatsFromResultados() {
 }
 
 // ─── Step 3: Recalculate predictions for upcoming matches ────────────────────
-async function recalcularPredicciones() {
+async function recalcularPredicciones(): Promise<number> {
   const partidos = await getPartidosEnVentana(8)
   console.log(`[cron] ${partidos.length} partidos en ventana de 8 días.`)
 
@@ -184,6 +185,8 @@ async function recalcularPredicciones() {
       console.error(`[cron] error Partido ${partido.id}:`, err)
     }
   }
+
+  return partidos.length
 }
 
 // ─── Main ────────────────────────────────────────────────────────────────────
@@ -198,7 +201,10 @@ export async function runCron() {
   await syncStatsFromResultados()
 
   // 3. Recalculate predictions for the next 8 days using fresh stats
-  await recalcularPredicciones()
+  const partidosActualizados = await recalcularPredicciones()
+
+  // 4. Save timestamp of this calculation
+  await guardarCalculo(partidosActualizados)
 
   console.log("[cron] Completado", new Date().toISOString())
 }
